@@ -93,7 +93,7 @@ class GeoLocSource extends DataSource {
 	* @param string address fragment
 	* @return mixed result of geolocation from google
 	*/
-	public function byAddress($address = null, $options = array()) {
+	public function byAddress($address = null, $options = [], $tries = 0) {
 		$options = array_merge(
 			$this->config,
 			$options
@@ -115,41 +115,51 @@ class GeoLocSource extends DataSource {
 			$retval = array(
 				'google' => $result
 			);
-  		if ($result['status'] == 'OK') {
-  			foreach ($result['results'] as $placemark) {
-  				$array = array(
-  					'address' => $placemark['formatted_address'],
-  					'lat' => $placemark['geometry']['location']['lat'],
-  					'lon' => $placemark['geometry']['location']['lng'],
-  					'state' => '',
-  					'city' => '',
-  					'country' => '',
-  					'zip' => '',
-  				);
-  				//Get Country, City, State from result.
-  				foreach ($placemark['address_components'] as $address_component) {
-  					if (in_array('locality', $address_component['types'])) {
-  						$array['city'] = $address_component['long_name'];
-  					}	elseif (in_array('administrative_area_level_1', $address_component['types'])) {
-  						$array['state'] = $address_component['short_name'];
-  					}	elseif (in_array('postal_code', $address_component['types'])) {
-  						$array['zip'] = $address_component['short_name'];
-  					}	elseif (in_array('country', $address_component['types'])) {
-  						$array['country'] = $address_component['short_name'];
-  					}
-  				}
-  				$retval['results'][] = $array;
-  			}
+	  		if ($result['status'] == 'OK') {
+	  			foreach ($result['results'] as $placemark) {
+	  				$array = array(
+	  					'address' => $placemark['formatted_address'],
+	  					'lat' => $placemark['geometry']['location']['lat'],
+	  					'lon' => $placemark['geometry']['location']['lng'],
+	  					'state' => '',
+	  					'city' => '',
+	  					'country' => '',
+	  					'zip' => '',
+	  				);
+	  				//Get Country, City, State from result.
+	  				foreach ($placemark['address_components'] as $address_component) {
+	  					if (in_array('locality', $address_component['types'])) {
+	  						$array['city'] = $address_component['long_name'];
+	  					}	elseif (in_array('administrative_area_level_1', $address_component['types'])) {
+	  						$array['state'] = $address_component['short_name'];
+	  					}	elseif (in_array('postal_code', $address_component['types'])) {
+	  						$array['zip'] = $address_component['short_name'];
+	  					}	elseif (in_array('country', $address_component['types'])) {
+	  						$array['country'] = $address_component['short_name'];
+	  					}
+	  				}
+	  				$retval['results'][] = $array;
+	  			}
 
-  			if ($options['cache']) {
-					if (!Cache::write($cache_key, $retval, $options['engine'])) {
-						$this->log("Error write cache geo_loc cache: $cache_key engine: {$options['engine']}");
+	  			if ($options['cache']) {
+						if (!Cache::write($cache_key, $retval, $options['engine'])) {
+							$this->log("Error write cache geo_loc cache: $cache_key engine: {$options['engine']}");
+						}
 					}
-				}
-  			return $retval;
-  		}
-  	}
-  	return false;
+	  			return $retval;
+	  		} else {
+				// Keep trying
+	  			if ($tries < $this->config['tries']) {
+		  			echo '.';
+		  			return $this->byAddress($address, $options, $tries + 1);
+	  			} else {
+	  				// We've maxed out our tries.
+	  				return false;
+	  			}
+	  		}
+	  	} else {
+		  	return false;	  		
+	  	}
 	}
 
 	/**
