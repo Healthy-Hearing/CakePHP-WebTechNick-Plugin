@@ -112,16 +112,15 @@ class RangeableBehavior extends ModelBehavior {
 				$range = 10;
 				if (isset($query['range']) && !empty($query['range'])) { $range = $query['range']; }
 				$query = $this->getRangeQuery($Model, $query, $range, $lat, $lon);
-				$range_out_till_count_is = $this->settings[$Model->alias]['range_out_till_count_is'];
-				if (isset($query['range_out_till_count_is'])) {
-					$range_out_till_count_is = $query['range_out_till_count_is'];
-				}
+				$range_out_till_count_is = isset($query['range_out_till_count_is']) ? $query['range_out_till_count_is'] : $this->settings[$Model->alias]['range_out_till_count_is'];
 				if (!empty($range_out_till_count_is)) {
+					$range_out_limit = isset($query['range_out_limit']) ? $query['range_out_limit'] : $this->settings[$Model->alias]['range_out_limit'];
+					$range_out_increment = isset($query['range_out_increment']) ? $query['range_out_increment'] : $this->settings[$Model->alias]['range_out_increment'];
 					// gotta count results and loop until count =>
 					$count = $Model->find('count', $query);
 					$reps = 0;
-					while ($count < $range_out_till_count_is && $reps < $this->settings[$Model->alias]['range_out_limit']) {
-						$range = $range + $this->settings[$Model->alias]['range_out_increment'];
+					while ($count < $range_out_till_count_is && $reps < $range_out_limit) {
+						$range = $range + $range_out_increment;
 						$query = $this->getRangeQuery($Model, $query, $range, $lat, $lon);
 						$count = $Model->find('count', $query);
 						$reps++;
