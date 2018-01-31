@@ -176,7 +176,11 @@ class RangeableBehavior extends ModelBehavior {
 					// treated as a string, so that putting into an array doesn't force type to an int.
 					$distanceSortable = strval($distanceSortable);
 					$distanceSortable = substr($distanceSortable, 0, strlen($distanceSortable)-3).'.'.substr($distanceSortable,-3, 4);
-					$results[$distanceSortable] = $result; 
+					// The query gives results within a box (not a circle), so the corners may be further away.
+					// Only save those within the circular range.
+					if ($distanceSortable <= $query['range']) {
+						$results[$distanceSortable] = $result;
+					}
 				}
 			}
 		}
