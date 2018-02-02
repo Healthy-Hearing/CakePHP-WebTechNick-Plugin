@@ -96,7 +96,7 @@ class VcfHelper extends AppHelper {
 		if (!isset($this->_elements[$type])) {
 			return false;
 		}
-		$out = String::insert($this->_elements[$type],
+		$out = CakeText::insert($this->_elements[$type],
 			$values, array('clean' => true, 'before' => '%', 'after' => '%')
 		);
 		return $out . $this->_eol;
@@ -127,9 +127,9 @@ class VcfHelper extends AppHelper {
 		$values['type'] = strtoupper($type);
 
 		$format = "%key%;%type%:;;%street%;%city%;%province%;%postal%;%country%;";
-		$adrEl = String::insert($format, $values, array('before' => '%', 'after' => '%', 'clean' => true));
+		$adrEl = CakeText::insert($format, $values, array('before' => '%', 'after' => '%', 'clean' => true));
 		$labelFormat = "LABEL;POSTAL;%type%;ENCODING=QUOTED-PRINTABLE:%street%=0D=0A%city%, %province% %postal%=0D=0A%country%";
-		$labelEl = String::insert($labelFormat, $values, array('before' => '%', 'after' => '%', 'clean' => true));
+		$labelEl = CakeText::insert($labelFormat, $values, array('before' => '%', 'after' => '%', 'clean' => true));
 
 		return $adrEl . $this->_eol . $labelEl . $this->_eol;
 	}
