@@ -57,7 +57,7 @@ class GeoLocSource extends DataSource {
 	* Google maps used for addres based geolocation lookup
 	* @access public
 	*/
-	public $googleMaps = 'http://maps.googleapis.com/maps/api/geocode/json';
+	public $googleMaps = 'https://maps.googleapis.com/maps/api/geocode/json';
 
 	/**
 	* HttpSocket object
@@ -105,7 +105,7 @@ class GeoLocSource extends DataSource {
 				return $cache;
 			}
 
-			$request = $this->googleMaps . '?address=' . urlencode($address) . '&sensor=false';
+			$request = $this->googleMaps . '?address=' . urlencode($address) . '&key=' . Configure::read('googleMapsApiKey');
 			$this->__requestLog[] = $request;
 			try {
 				$result = json_decode($this->Http->get($request), true);
