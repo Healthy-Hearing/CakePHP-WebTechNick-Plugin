@@ -105,7 +105,7 @@ class GeoLocSource extends DataSource {
 				return $cache;
 			}
 
-			$request = $this->googleMaps . '?address=' . urlencode($address) . '&key=' . Configure::read('googleMapsApiKey');
+			$request = $this->googleMaps . '?address=' . urlencode($address) . '&key=' . Configure::read('googleMapsWebServicesApiKey');
 			$this->__requestLog[] = $request;
 			try {
 				$result = json_decode($this->Http->get($request), true);
