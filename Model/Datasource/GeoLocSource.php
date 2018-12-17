@@ -59,6 +59,8 @@ class GeoLocSource extends DataSource {
 	*/
 	public $googleMaps = 'https://maps.googleapis.com/maps/api/geocode/json';
 
+	public $googleDistanceMatrix = 'https://maps.googleapis.com/maps/api/distancematrix/json';
+
 	/**
 	* HttpSocket object
 	* @access public
@@ -86,6 +88,39 @@ class GeoLocSource extends DataSource {
 			$config
 		);
 		parent::__construct($config);
+	}
+
+
+	/**
+	* Takes origin and destination addresses and returns distance and travel time between them (by car).
+	* @param string address fragment
+	* @return mixed result of geolocation from google
+	*/
+	public function byDistance($origin = null, $destination, $options = ['cache' => 0]) {
+		$options = array_merge(
+			$this->config,
+			$options
+		);
+
+		if ($origin && $destination) {
+			// Debugger::log("Good origin and destination!");
+			$request = $this->googleDistanceMatrix . '?units=imperial&origins=' . urlencode($origin) . '&destinations=' . urlencode($destination) . '&key=' . Configure::read('googleMapsWebServicesApiKey');
+			Debugger::log($request);
+			$this->__requestLog[] = $request;
+			try {
+				$result = json_decode($this->Http->get($request), true);
+			} catch (Exception $e) {
+				return false;
+			}
+			$retval = array(
+				'google' => $result
+			);
+			if ($result['status'] == 'OK') {
+				return $retval;
+			}
+		}
+
+		return false;
 	}
 
 	/**
