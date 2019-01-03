@@ -78,7 +78,11 @@ class GeoLocSource extends DataSource {
 	* Load the HttpSocket
 	*/
 	public function __construct($config = array()) {
-		$this->Http = new HttpSocket();
+		$httpConfig = [];
+		if (Configure::read('env') == 'local') {
+			$httpConfig['ssl_verify_host'] = false;
+		}
+		$this->Http = new HttpSocket($httpConfig);
 		$config = array_merge(
 			array(
 				'server' => 'infosniper',
@@ -145,6 +149,7 @@ class GeoLocSource extends DataSource {
 			try {
 				$result = json_decode($this->Http->get($request), true);
 			} catch (Exception $e) {
+				pr('Exception in GeoLocSource::byAddress(): ' . $e->getMessage());
 				return false;
 			}
 			$retval = array(
