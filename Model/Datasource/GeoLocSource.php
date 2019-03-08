@@ -103,9 +103,7 @@ class GeoLocSource extends DataSource {
 		);
 
 		if ($origin && $destination) {
-			// Debugger::log("Good origin and destination!");
 			$request = $this->googleDistanceMatrix . '?units=imperial&origins=' . urlencode($origin) . '&destinations=' . urlencode($destination) . '&key=' . Configure::read('googleMapsWebServicesApiKey');
-			Debugger::log($request);
 			$this->__requestLog[] = $request;
 			try {
 				$result = json_decode($this->Http->get($request), true);
