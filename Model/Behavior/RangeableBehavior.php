@@ -175,6 +175,9 @@ class RangeableBehavior extends ModelBehavior {
 				if (!isset($query['limit_']) || count($results) < $query['limit_']) {
 					// treated as a string, so that putting into an array doesn't force type to an int.
 					$distanceSortable = strval($distanceSortable);
+					// Left pad with 0s so subsequent substr()s work correctly
+					// Necessary for distances less than 0.1 miles/km/etc (i.e. 0.06m * 1000 -> 60 ->pad-> 060)
+					$distanceSortable = str_pad($distanceSortable, 3, "0", STR_PAD_LEFT);
 					$distanceSortable = substr($distanceSortable, 0, strlen($distanceSortable)-3).'.'.substr($distanceSortable,-3, 4);
 					// The query gives results within a box (not a circle), so the corners may be further away.
 					// Only save those within the circular range.
