@@ -33,7 +33,6 @@ require statements
 */
 App::uses('HttpSocket', 'Network/Http');
 App::uses('CakeSession', 'Model/Datasource');
-//App::import('Vendor', 'geoip2.phar');
 use GeoIp2\Database\Reader;
 class GeoLocSource extends DataSource {
 
@@ -255,8 +254,8 @@ class GeoLocSource extends DataSource {
 					break;
 				}
 				try {
-					require_once(APP.'Vendor'. DS . 'geoip2.phar');
-					$reader = new Reader( APP . 'Vendor' . DS . 'GeoIP2-City-North-America.mmdb');
+					require_once(APP.'Vendor'. DS . 'maxmind' . DS . 'geoip2.phar');
+					$reader = new Reader( APP . 'Vendor' . DS .'maxmind' . DS . 'GeoIP2-City-North-America.mmdb');
 					$retval = $reader->city($ip);
 				} catch(Exception $e) {
 					$this->log("Error reading maxmind database with IP: $ip. Message: " . $e->getMessage());
