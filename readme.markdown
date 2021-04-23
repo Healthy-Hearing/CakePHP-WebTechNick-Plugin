@@ -29,16 +29,12 @@ Documentation for each: web_tech_nick/docs
 	* Helper to make correctly formated vcf contact cards
 * WebTechNick.Ckeditor
 	* WYSIWYG Editor
-* WebTechNick.AddThis
-	* AddThis Helper (read header for howto use)
 * WebTechNick.Recaptcha
 	* Recaptcha Helper google captcha service
 
 # Elements:
 * Disqus (docs/disqus.markdown)
 	* Add comments and socialization to any page
-* AddThis
-	* AddThis share element
 
 # Components:
 * WebTechNick.GeoLoc
