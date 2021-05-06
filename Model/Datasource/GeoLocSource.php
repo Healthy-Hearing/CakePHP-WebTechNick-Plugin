@@ -187,7 +187,6 @@ class GeoLocSource extends DataSource {
 	  		} else {
 				// Keep trying
 	  			if ($tries < $this->config['tries']) {
-		  			echo '.';
 		  			return $this->byAddress($address, $options, $tries + 1);
 	  			} else {
 	  				// We've maxed out our tries.
